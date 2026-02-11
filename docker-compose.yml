@@ -1,0 +1,81 @@
+services:
+  blog-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webdev-blog
+    ports:
+      - "3005:3000"
+    environment:
+      - DATABASE_URL=postgresql://blog_user:blog_password@blog-db:5432/blog_db
+      - REDIS_URL=redis://blog-redis:6379
+      - MINIO_ENDPOINT=blog-minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=blog-images
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=https://blog.davidfdzmorilla.dev
+      - NODE_ENV=production
+    depends_on:
+      blog-db:
+        condition: service_healthy
+      blog-redis:
+        condition: service_started
+      blog-minio:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - blog-network
+
+  blog-db:
+    image: postgres:17-alpine
+    container_name: webdev-blog-db
+    environment:
+      - POSTGRES_USER=blog_user
+      - POSTGRES_PASSWORD=blog_password
+      - POSTGRES_DB=blog_db
+    volumes:
+      - blog_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blog_user -d blog_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - blog-network
+
+  blog-redis:
+    image: redis:7-alpine
+    container_name: webdev-blog-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - blog_redis_data:/data
+    restart: unless-stopped
+    networks:
+      - blog-network
+
+  blog-minio:
+    image: minio/minio:latest
+    container_name: webdev-blog-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - blog_minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+    networks:
+      - blog-network
+
+volumes:
+  blog_postgres_data:
+  blog_redis_data:
+  blog_minio_data:
+
+networks:
+  blog-network:
+    driver: bridge
