@@ -13,6 +13,8 @@ export const auth = betterAuth({
       verification: schema.verifications,
     },
   }),
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
+  trustedOrigins: ['https://blog.davidfdzmorilla.dev', 'http://localhost:3000'],
   emailAndPassword: {
     enabled: true,
   },
