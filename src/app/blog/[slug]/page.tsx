@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: post.title,
       description: post.excerpt || post.content.slice(0, 160),
       type: 'article',
-      publishedTime: post.publishedAt.toISOString(),
+      publishedTime: typeof post.publishedAt === 'string' ? post.publishedAt : post.publishedAt.toISOString(),
       authors: [post.author.name],
       images: post.featuredImage
         ? [
@@ -78,7 +78,7 @@ export default async function PostPage({ params }: PageProps) {
     headline: post.title,
     description: post.excerpt || undefined,
     image: post.featuredImage || undefined,
-    datePublished: post.publishedAt.toISOString(),
+    datePublished: typeof post.publishedAt === 'string' ? post.publishedAt : post.publishedAt.toISOString(),
     author: {
       '@type': 'Person',
       name: post.author.name,
