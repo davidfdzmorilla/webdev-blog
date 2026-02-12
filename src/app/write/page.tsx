@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import TipTapEditor from '@/components/TipTapEditor';
 import { createPost } from '@/app/actions/posts';
+import { uploadImage } from '@/app/actions/media';
 
 export default function WritePage() {
   const router = useRouter();
@@ -12,6 +13,8 @@ export default function WritePage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [excerpt, setExcerpt] = useState('');
+  const [featuredImage, setFeaturedImage] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -23,6 +26,25 @@ export default function WritePage() {
       router.push('/dashboard');
     }
   }, [session, isPending, router]);
+
+  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setError('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const result = await uploadImage(formData);
+      setFeaturedImage(result.media.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleSaveDraft = async () => {
     if (!title.trim()) {
@@ -43,6 +65,7 @@ export default function WritePage() {
         title,
         content,
         excerpt: excerpt || undefined,
+        featuredImage: featuredImage || undefined,
         status: 'draft',
       });
       router.push('/dashboard/posts');
@@ -72,6 +95,7 @@ export default function WritePage() {
         title,
         content,
         excerpt: excerpt || undefined,
+        featuredImage: featuredImage || undefined,
         status: 'published',
       });
       router.push('/blog');
@@ -161,6 +185,38 @@ export default function WritePage() {
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="featured-image"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Featured Image (optional)
+            </label>
+            <div className="flex items-center space-x-4">
+              <input
+                id="featured-image"
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                onChange={handleFeaturedImageUpload}
+                disabled={uploadingImage}
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {uploadingImage && <span className="text-sm text-gray-500">Uploading...</span>}
+            </div>
+            {featuredImage && (
+              <div className="mt-2">
+                <img src={featuredImage} alt="Featured" className="max-w-xs rounded border" />
+                <button
+                  type="button"
+                  onClick={() => setFeaturedImage('')}
+                  className="mt-1 text-sm text-red-600 hover:text-red-800"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
