@@ -1,5 +1,3 @@
-import type { Session } from 'better-auth/types';
-
 export interface ExtendedUser {
   id: string;
   email: string;
@@ -13,10 +11,14 @@ export interface ExtendedUser {
   updatedAt: Date;
 }
 
-export interface ExtendedSession extends Omit<Session, 'user'> {
+export interface ExtendedSession {
   user: ExtendedUser;
-}
-
-export function isExtendedSession(session: Session | null): session is ExtendedSession {
-  return session !== null && 'role' in (session.user as Record<string, unknown>);
+  session: {
+    id: string;
+    userId: string;
+    expiresAt: Date;
+    token: string;
+    ipAddress?: string | null;
+    userAgent?: string | null;
+  };
 }

@@ -19,23 +19,6 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day,
-    customSession: async ({
-      session,
-      user,
-    }: {
-      session: Record<string, unknown>;
-      user: Record<string, unknown>;
-    }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          role: user.role as string,
-          bio: user.bio as string | null,
-          avatarUrl: user.avatarUrl as string | null,
-        },
-      };
-    },
   },
   user: {
     additionalFields: {

@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPostBySlug } from '@/app/actions/public';
+import { getCommentsByPost } from '@/app/actions/comments';
+import CommentSection from '@/components/CommentSection';
 import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
@@ -57,6 +59,8 @@ export default async function PostPage({ params }: PageProps) {
   if (!post) {
     notFound();
   }
+
+  const comments = await getCommentsByPost(post.id);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -179,8 +183,11 @@ export default async function PostPage({ params }: PageProps) {
             </div>
           )}
 
+          {/* Comments */}
+          <CommentSection postId={post.id} initialComments={comments} />
+
           {/* Back to Blog */}
-          <div className="text-center">
+          <div className="text-center mt-12">
             <Link
               href="/blog"
               className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
