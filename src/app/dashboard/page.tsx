@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+import { SignOutButton } from '@/components/SignOutButton';
 
 async function getSession() {
   const cookieStore = await cookies();
@@ -55,14 +56,7 @@ export default async function DashboardPage() {
               <span className="text-gray-700">
                 {user.name} ({user.role || 'reader'})
               </span>
-              <form action="/api/auth/sign-out" method="POST">
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
-                >
-                  Logout
-                </button>
-              </form>
+              <SignOutButton />
             </div>
           </div>
         </div>
