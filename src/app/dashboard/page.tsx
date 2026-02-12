@@ -6,7 +6,11 @@ async function getSession() {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get('__Secure-better-auth.session_token')?.value;
   
+  console.log('All cookies:', cookieStore.getAll().map(c => c.name));
+  console.log('Session token:', sessionToken);
+  
   if (!sessionToken) {
+    console.log('No session token found');
     return null;
   }
 

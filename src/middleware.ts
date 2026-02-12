@@ -8,8 +8,8 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route));
 
   if (isProtectedRoute) {
-    // Check for session cookie (better-auth uses 'better-auth.session_token')
-    const sessionToken = request.cookies.get('better-auth.session_token');
+    // Check for session cookie (better-auth uses '__Secure-better-auth.session_token' in production)
+    const sessionToken = request.cookies.get('__Secure-better-auth.session_token');
 
     if (!sessionToken) {
       // Redirect to login if not authenticated
@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => path.startsWith(route));
 
   if (isAuthRoute) {
-    const sessionToken = request.cookies.get('better-auth.session_token');
+    const sessionToken = request.cookies.get('__Secure-better-auth.session_token');
     if (sessionToken) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
