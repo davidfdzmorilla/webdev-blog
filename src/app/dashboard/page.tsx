@@ -92,15 +92,23 @@ export default function DashboardPage() {
               <h3 className="text-lg font-semibold mb-2">Quick Actions</h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {(session.user.role === 'author' || session.user.role === 'admin') && (
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    Write New Post
-                  </button>
+                  <>
+                    <button
+                      onClick={() => router.push('/write')}
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                      Write New Post
+                    </button>
+                    <button
+                      onClick={() => router.push('/dashboard/posts')}
+                      className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                    >
+                      My Posts
+                    </button>
+                  </>
                 )}
                 <button className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
                   View Profile
-                </button>
-                <button className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
-                  Settings
                 </button>
               </div>
             </div>
