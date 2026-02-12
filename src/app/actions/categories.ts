@@ -7,11 +7,12 @@ import { headers } from 'next/headers';
 import { eq, desc } from 'drizzle-orm';
 import { generateSlug } from '@/lib/utils/slug';
 import { revalidatePath } from 'next/cache';
+import type { ExtendedSession } from '@/lib/auth-types';
 
 export async function createCategory(formData: { name: string; description?: string }) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session || session.user.role !== 'admin') {
     throw new Error('Unauthorized: Must be admin');
@@ -38,9 +39,9 @@ export async function updateCategory(
   categoryId: string,
   formData: { name?: string; description?: string }
 ) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session || session.user.role !== 'admin') {
     throw new Error('Unauthorized: Must be admin');
@@ -70,9 +71,9 @@ export async function updateCategory(
 }
 
 export async function deleteCategory(categoryId: string) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session || session.user.role !== 'admin') {
     throw new Error('Unauthorized: Must be admin');
@@ -92,9 +93,9 @@ export async function getAllCategories() {
 }
 
 export async function addPostCategory(postId: string, categoryId: string) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session || (session.user.role !== 'author' && session.user.role !== 'admin')) {
     throw new Error('Unauthorized');
@@ -112,9 +113,9 @@ export async function addPostCategory(postId: string, categoryId: string) {
 }
 
 export async function removePostCategory(postId: string, categoryId: string) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session || (session.user.role !== 'author' && session.user.role !== 'admin')) {
     throw new Error('Unauthorized');

@@ -1,4 +1,5 @@
 'use server';
+import type { ExtendedSession } from '@/lib/auth-types';
 
 import { db } from '@/lib/db';
 import { media } from '@/lib/db/schema';
@@ -8,9 +9,9 @@ import { eq } from 'drizzle-orm';
 import { uploadToS3, deleteFromS3 } from '@/lib/s3';
 
 export async function uploadImage(formData: FormData) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');
@@ -59,9 +60,9 @@ export async function uploadImage(formData: FormData) {
 }
 
 export async function deleteImage(mediaId: string) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');
@@ -94,9 +95,9 @@ export async function deleteImage(mediaId: string) {
 }
 
 export async function getMyMedia() {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');

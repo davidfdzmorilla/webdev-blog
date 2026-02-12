@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { getPostsByAuthor } from '@/app/actions/public';
 import type { Metadata } from 'next';
 
-export const revalidate = 300; // ISR: revalidate every 5 minutes
+export const dynamic = 'force-dynamic';
 
 interface PageProps {
   params: Promise<{ id: string }>;

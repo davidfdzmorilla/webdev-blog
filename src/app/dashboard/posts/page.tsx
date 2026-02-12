@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
+import type { ExtendedSession } from '@/lib/auth-types';
 import { getMyPosts, publishPost, unpublishPost, deletePost } from '@/app/actions/posts';
 
 interface Post {
@@ -17,7 +18,8 @@ interface Post {
 
 export default function MyPostsPage() {
   const router = useRouter();
-  const { data: session, isPending } = useSession();
+  const { data: sessionData, isPending } = useSession();
+  const session = sessionData as ExtendedSession | null;
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

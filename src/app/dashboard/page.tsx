@@ -1,11 +1,13 @@
 'use client';
 
 import { useSession, signOut } from '@/lib/auth-client';
+import type { ExtendedSession } from '@/lib/auth-types';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function DashboardPage() {
-  const { data: session, isPending } = useSession();
+  const { data: sessionData, isPending } = useSession();
+  const session = sessionData as ExtendedSession | null;
   const router = useRouter();
 
   useEffect(() => {

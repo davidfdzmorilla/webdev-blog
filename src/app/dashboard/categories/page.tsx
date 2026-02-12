@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
+import type { ExtendedSession } from '@/lib/auth-types';
 import {
   createCategory,
   updateCategory,
@@ -20,7 +21,8 @@ interface Category {
 
 export default function CategoriesPage() {
   const router = useRouter();
-  const { data: session, isPending } = useSession();
+  const { data: sessionData, isPending } = useSession();
+  const session = sessionData as ExtendedSession | null;
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

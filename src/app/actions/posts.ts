@@ -7,6 +7,7 @@ import { headers } from 'next/headers';
 import { eq, desc } from 'drizzle-orm';
 import { generateSlug, generateExcerpt } from '@/lib/utils/slug';
 import { revalidatePath } from 'next/cache';
+import type { ExtendedSession } from '@/lib/auth-types';
 
 export async function createPost(formData: {
   title: string;
@@ -15,9 +16,9 @@ export async function createPost(formData: {
   featuredImage?: string;
   status?: 'draft' | 'published';
 }) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session || (session.user.role !== 'author' && session.user.role !== 'admin')) {
     throw new Error('Unauthorized: Must be author or admin');
@@ -59,9 +60,9 @@ export async function updatePost(
     featuredImage?: string;
   }
 ) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');
@@ -113,9 +114,9 @@ export async function updatePost(
 }
 
 export async function publishPost(postId: string) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');
@@ -149,9 +150,9 @@ export async function publishPost(postId: string) {
 }
 
 export async function unpublishPost(postId: string) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');
@@ -184,9 +185,9 @@ export async function unpublishPost(postId: string) {
 }
 
 export async function deletePost(postId: string) {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');
@@ -214,9 +215,9 @@ export async function deletePost(postId: string) {
 }
 
 export async function getMyPosts() {
-  const session = await auth.api.getSession({
+  const session = (await auth.api.getSession({
     headers: await headers(),
-  });
+  })) as ExtendedSession | null;
 
   if (!session) {
     throw new Error('Unauthorized');

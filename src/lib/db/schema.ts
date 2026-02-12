@@ -91,7 +91,7 @@ export const comments = pgTable('comments', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  parentId: uuid('parent_id').references(() => comments.id, { onDelete: 'cascade' }),
+  parentId: uuid('parent_id'),
   content: text('content').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

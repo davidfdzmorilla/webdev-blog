@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getRecentPosts } from './actions/public';
 
-export const revalidate = 300; // ISR: revalidate every 5 minutes
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const posts = await getRecentPosts(6);
