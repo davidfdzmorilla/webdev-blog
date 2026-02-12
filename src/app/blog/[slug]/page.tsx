@@ -3,8 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getPostBySlug } from '@/app/actions/public';
 import { getCommentsByPost } from '@/app/actions/comments';
+import { getReactionCounts } from '@/app/actions/reactions';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import CommentSection from '@/components/CommentSection';
+import ReactionBar from '@/components/ReactionBar';
 import type { Metadata } from 'next';
+import type { ExtendedSession } from '@/lib/auth-types';
 
 export const dynamic = 'force-dynamic';
 
@@ -60,7 +65,12 @@ export default async function PostPage({ params }: PageProps) {
     notFound();
   }
 
+  const session = (await auth.api.getSession({
+    headers: await headers(),
+  })) as ExtendedSession | null;
+
   const comments = await getCommentsByPost(post.id);
+  const reactionCounts = await getReactionCounts(post.id, session?.user?.id);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -168,6 +178,9 @@ export default async function PostPage({ params }: PageProps) {
             className="prose prose-lg prose-blue max-w-none mb-12"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+
+          {/* Reactions */}
+          <ReactionBar postId={post.id} initialCounts={reactionCounts} />
 
           {/* Author Bio */}
           {post.author.bio && (
