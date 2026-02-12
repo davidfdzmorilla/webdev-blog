@@ -3,9 +3,11 @@
 ## Milestones
 
 ### M1: Project Setup & Infrastructure (30 min)
+
 **Status**: 🔄 In Progress
 
 **Tasks**:
+
 - [x] Create design documents (DESIGN.md, ROADMAP.md)
 - [ ] Initialize Next.js 15 project
 - [ ] Configure TypeScript (strict mode)
@@ -20,6 +22,7 @@
 - [ ] Create .env.example
 
 **Deliverables**:
+
 - ✅ Project scaffolding complete
 - ✅ Docker builds successfully
 - ✅ Database connection working
@@ -28,9 +31,11 @@
 ---
 
 ### M2: Authentication & User Management (45 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Configure Better-Auth with roles
 - [ ] Create auth API routes
 - [ ] Implement signup page
@@ -41,6 +46,7 @@
 - [ ] Add role-based UI conditionals
 
 **Deliverables**:
+
 - ✅ Users can signup/login/logout
 - ✅ Role assignment working (admin/author/reader)
 - ✅ Protected routes enforced
@@ -49,9 +55,11 @@
 ---
 
 ### M3: Post Creation & Management (60 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Install and configure TipTap editor
 - [ ] Create `/write` page (protected, authors only)
 - [ ] Build post creation form
@@ -65,6 +73,7 @@
 - [ ] Implement excerpt auto-generation
 
 **Deliverables**:
+
 - ✅ Authors can create/edit posts
 - ✅ TipTap editor working with formatting
 - ✅ Drafts saved automatically
@@ -74,9 +83,11 @@
 ---
 
 ### M4: Categories & Organization (30 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Create categories management UI (admin only)
 - [ ] Implement Server Action: createCategory
 - [ ] Implement Server Action: updateCategory
@@ -86,6 +97,7 @@
 - [ ] Add category badges to post cards
 
 **Deliverables**:
+
 - ✅ Admins can manage categories
 - ✅ Authors can assign categories to posts
 - ✅ Category pages show filtered posts
@@ -94,9 +106,11 @@
 ---
 
 ### M5: Image Uploads & Media (45 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Configure MinIO in docker-compose
 - [ ] Install AWS SDK for S3-compatible uploads
 - [ ] Create image upload Server Action
@@ -107,6 +121,7 @@
 - [ ] Implement image deletion
 
 **Deliverables**:
+
 - ✅ Images upload to MinIO successfully
 - ✅ Images can be inserted in posts via TipTap
 - ✅ Featured images display on post cards
@@ -116,9 +131,11 @@
 ---
 
 ### M6: Public Blog Pages (45 min)
-**Status**: ⏳ Pending
+
+**Status**: ✅ Complete
 
 **Tasks**:
+
 - [ ] Create homepage (/) with recent posts
 - [ ] Create blog index (/blog) with pagination
 - [ ] Create single post page (/blog/[slug])
@@ -130,6 +147,7 @@
 - [ ] Create related posts logic
 
 **Deliverables**:
+
 - ✅ Homepage shows recent 6 posts
 - ✅ Blog index paginates correctly
 - ✅ Post pages render rich content
@@ -139,9 +157,11 @@
 ---
 
 ### M7: Comments System (45 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Create comments schema (with parent_id for nesting)
 - [ ] Generate migration
 - [ ] Implement Server Action: addComment
@@ -153,6 +173,7 @@
 - [ ] Add rate limiting (5 comments/min)
 
 **Deliverables**:
+
 - ✅ Users can comment on posts
 - ✅ Nested replies work (1 level deep)
 - ✅ Comment count displays correctly
@@ -162,9 +183,11 @@
 ---
 
 ### M8: Reactions System (30 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Create reactions schema
 - [ ] Generate migration
 - [ ] Implement Server Action: toggleReaction
@@ -175,6 +198,7 @@
 - [ ] Ensure unique constraint (user + post + type)
 
 **Deliverables**:
+
 - ✅ Users can react to posts (like, heart, fire, clap)
 - ✅ Reaction counts display in real-time
 - ✅ Users can toggle reactions on/off
@@ -183,9 +207,11 @@
 ---
 
 ### M9: RSS Feeds (30 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Create /api/rss.xml route (all posts)
 - [ ] Create /api/rss/category/[slug].xml route
 - [ ] Create /api/rss/author/[id].xml route
@@ -194,6 +220,7 @@
 - [ ] Add RSS autodiscovery meta tag
 
 **Deliverables**:
+
 - ✅ RSS feed generates valid XML
 - ✅ Feeds update when posts publish
 - ✅ Category and author feeds work
@@ -202,9 +229,11 @@
 ---
 
 ### M10: Performance & Caching (30 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Configure Redis client
 - [ ] Implement cache for published posts (5 min TTL)
 - [ ] Implement cache for categories (15 min TTL)
@@ -216,6 +245,7 @@
 - [ ] Add lazy loading for comments
 
 **Deliverables**:
+
 - ✅ Redis caching active
 - ✅ Cache hit rate >70%
 - ✅ Page load time <2s
@@ -224,9 +254,11 @@
 ---
 
 ### M11: Deployment & Testing (45 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Create Makefile with common commands
 - [ ] Write Nginx reverse proxy config
 - [ ] Configure Cloudflare DNS (blog.davidfdzmorilla.dev)
@@ -241,6 +273,7 @@
 - [ ] Test responsive design (mobile/tablet/desktop)
 
 **Deliverables**:
+
 - ✅ Site live at https://blog.davidfdzmorilla.dev
 - ✅ SSL certificate valid
 - ✅ Lighthouse score ≥90
@@ -250,9 +283,11 @@
 ---
 
 ### M12: Documentation & Release (20 min)
+
 **Status**: ⏳ Pending
 
 **Tasks**:
+
 - [ ] Write README.md
 - [ ] Create CHANGELOG.md
 - [ ] Document environment variables
@@ -263,6 +298,7 @@
 - [ ] Update PROGRESS.json
 
 **Deliverables**:
+
 - ✅ README complete with setup instructions
 - ✅ CHANGELOG created
 - ✅ Release v1.0.0 tagged
