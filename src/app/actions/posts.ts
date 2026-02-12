@@ -7,6 +7,7 @@ import { headers } from 'next/headers';
 import { eq, desc } from 'drizzle-orm';
 import { generateSlug, generateExcerpt } from '@/lib/utils/slug';
 import { revalidatePath } from 'next/cache';
+import { cacheDeletePattern } from '@/lib/redis';
 import type { ExtendedSession } from '@/lib/auth-types';
 
 export async function createPost(formData: {
@@ -46,6 +47,9 @@ export async function createPost(formData: {
   if (status === 'published') {
     revalidatePath('/blog');
     revalidatePath('/');
+    // Invalidate caches
+    await cacheDeletePattern('recent_posts:*');
+    await cacheDeletePattern('post:*');
   }
 
   return { success: true, post };

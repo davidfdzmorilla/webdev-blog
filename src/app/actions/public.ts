@@ -3,6 +3,7 @@
 import { db } from '@/lib/db';
 import { posts, users, categories, postCategories } from '@/lib/db/schema';
 import { eq, desc, and, sql } from 'drizzle-orm';
+import { cacheGet, cacheSet } from '@/lib/redis';
 
 export interface PublicPost {
   id: string;
@@ -33,6 +34,11 @@ function calculateReadingTime(content: string): number {
 }
 
 export async function getRecentPosts(limit: number = 6): Promise<PublicPost[]> {
+  // Try cache first
+  const cacheKey = `recent_posts:${limit}`;
+  const cached = await cacheGet<PublicPost[]>(cacheKey);
+  if (cached) return cached;
+
   const publishedPosts = await db
     .select({
       post: posts,
@@ -76,10 +82,18 @@ export async function getRecentPosts(limit: number = 6): Promise<PublicPost[]> {
     })
   );
 
+  // Cache for 5 minutes
+  await cacheSet(cacheKey, postsWithCategories, 300);
+
   return postsWithCategories;
 }
 
 export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
+  // Try cache first
+  const cacheKey = `post:${slug}`;
+  const cached = await cacheGet<PublicPost>(cacheKey);
+  if (cached) return cached;
+
   const result = await db
     .select({
       post: posts,
@@ -100,7 +114,7 @@ export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
     .innerJoin(categories, eq(postCategories.categoryId, categories.id))
     .where(eq(postCategories.postId, post.id));
 
-  return {
+  const publicPost: PublicPost = {
     id: post.id,
     title: post.title,
     slug: post.slug,
@@ -121,6 +135,11 @@ export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
       slug: category.slug,
     })),
   };
+
+  // Cache for 5 minutes
+  await cacheSet(cacheKey, publicPost, 300);
+
+  return publicPost;
 }
 
 export async function getPostsByCategory(
