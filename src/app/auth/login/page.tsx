@@ -17,14 +17,16 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await signIn.email({
+      const result = await signIn.email({
         email: formData.email,
         password: formData.password,
       });
-      router.push('/dashboard');
+      console.log('Login result:', result);
+      // Force navigation
+      window.location.href = '/dashboard';
     } catch (err) {
+      console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Failed to sign in');
-    } finally {
       setLoading(false);
     }
   };
