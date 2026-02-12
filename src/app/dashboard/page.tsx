@@ -1,16 +1,43 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 
-export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+async function getSession() {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get('__Secure-better-auth.session_token')?.value;
+  
+  if (!sessionToken) {
+    return null;
+  }
 
-  if (!session) {
+  try {
+    const response = await fetch('http://localhost:3000/api/auth/get-session', {
+      headers: {
+        'Cookie': `__Secure-better-auth.session_token=${sessionToken}`,
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Session fetch error:', error);
+    return null;
+  }
+}
+
+export default async function DashboardPage() {
+  const sessionData = await getSession();
+
+  if (!sessionData || !sessionData.user) {
     redirect('/auth/login');
   }
+
+  const { user, session } = sessionData;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -22,7 +49,7 @@ export default async function DashboardPage() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">
-                {session.user.name} ({session.user.role || 'reader'})
+                {user.name} ({user.role || 'reader'})
               </span>
               <form action="/api/auth/sign-out" method="POST">
                 <button
@@ -40,7 +67,7 @@ export default async function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
-          <p className="mt-2 text-gray-600">Welcome back, {session.user.name}!</p>
+          <p className="mt-2 text-gray-600">Welcome back, {user.name}!</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -52,7 +79,7 @@ export default async function DashboardPage() {
             <p className="text-gray-600">Browse all published posts</p>
           </Link>
 
-          {(session.user.role === 'admin' || session.user.role === 'author') && (
+          {(user.role === 'admin' || user.role === 'author') && (
             <>
               <Link
                 href="/dashboard/posts/new"
@@ -78,16 +105,16 @@ export default async function DashboardPage() {
           <dl className="space-y-2">
             <div>
               <dt className="text-sm font-medium text-gray-500">Email</dt>
-              <dd className="text-sm text-gray-900">{session.user.email}</dd>
+              <dd className="text-sm text-gray-900">{user.email}</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">Role</dt>
-              <dd className="text-sm text-gray-900">{session.user.role || 'reader'}</dd>
+              <dd className="text-sm text-gray-900">{user.role || 'reader'}</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">Member since</dt>
               <dd className="text-sm text-gray-900">
-                {new Date(session.user.createdAt).toLocaleDateString()}
+                {new Date(user.createdAt).toLocaleDateString()}
               </dd>
             </div>
           </dl>
